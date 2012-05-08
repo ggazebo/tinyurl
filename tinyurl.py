@@ -59,6 +59,10 @@ db.connect()
 @bottle.post('/shorten_url')
 def new_url():
     request = json.load(bottle.request.body)
+
+    if 'long_url' not in request:
+        return {'success': False, 'error': "No URL in request"}
+
     url_code = db.store_url(request['long_url'], request.get('custom_short_code', None))
 
     if url_code:
