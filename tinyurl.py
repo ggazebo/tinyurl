@@ -28,7 +28,7 @@ class UrlDB:
 
         return None
 
-    def new_url(self, long_url, url_code=None):
+    def store_url(self, long_url, url_code=None):
         '''Generate a new unique URL code
 
         If url_code is specified and it conflicts with an existing code,
@@ -59,7 +59,7 @@ db.connect()
 @bottle.post('/shorten_url')
 def new_url():
     request = json.load(bottle.request.body)
-    url_code = db.new_url(request['long_url'], request.get('custom_short_code', None))
+    url_code = db.store_url(request['long_url'], request.get('custom_short_code', None))
 
     if url_code:
         return {'success': True, 'short_code': url_code}
