@@ -38,9 +38,10 @@ class UrlDB:
         while True:
             try:
                 with self.con:
-                    new_code = random_code() if (url_code == None) else url_code
+                    new_code = self.random_code() if (url_code == None) else url_code
                     self.con.execute("INSERT INTO urls(id, url) values (?, ?)",
-                                     (url_code, long_url))
+                                     (new_code, long_url))
+                    break
             except sqlite3.IntegrityError:
                 if url_code != None:
                     return None
