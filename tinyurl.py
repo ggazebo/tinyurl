@@ -11,12 +11,15 @@ bottle.debug(True)
 # The list of valid characters in an URL code: [a-zA-Z0-9]
 URL_CODE_CHARS = string.ascii_letters + string.digits
 
+DB_PATH = "./urls.db"
+
 class UrlDB:
-    def __init__(self):
+    def __init__(self, db_path=DB_PATH):
         self.con = None
+        self._db_path = db_path
 
     def connect(self):
-        self.con = sqlite3.connect("urls.db")
+        self.con = sqlite3.connect(self._db_path)
         self.con.execute("CREATE TABLE IF NOT EXISTS urls (id PRIMARY KEY ON CONFLICT FAIL, url)")
 
     def get_url(self, url_code):
