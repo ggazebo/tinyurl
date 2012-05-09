@@ -1,0 +1,68 @@
+Implemented using Python with Bottle, and sqlite for persistence.
+
+It's a very minimal implementation and many exceptional conditions are ignored,
+e.g. DB connection failure, malformed/invalid request, and running out of short
+codes to hand out.
+
+tinyurl_test.py contains unit testing code.
+
+Tested on python 2.7.2.
+
+-----------------------
+PERSISTENCE AND CACHING
+-----------------------
+
+sqlite was chosen for this implementation for time, but this obviously complicates
+horizontal scaling, and probably limits single instance throughput if the load on
+creating new entries is high enough.
+
+While URL shorteners are much heavier terms of read than write operations,
+replication of persisted data is tricky because uniqueness of new short codes
+cannot be guaranteed if there is no total consistency.
+
+Several options to metigate this, either used in isolation or in combinations:
+
+  - If load on creating new short codes is low enough, have a single point
+    of entry (with fallback) for generating and recording new codes. Replicate
+    to read-only slaves for nodes that only service redirection requests.
+    Redis seems to be appropriate here, although I've not actually used it yet.
+
+  - Use an immediately-consistent replication system and take the performance
+    hit on creating new codes. Goold-old relational database, or Membase?
+
+  - Manually partition the short code space so that it is not possible for
+    multiple nodes to generate the same random short code simultaneously.
+    Incurs extra complexity in maintaining this separation, but allows for
+    use of eventual-consistency systems. CouchDB, Cassandra et al, but lighter
+    the better.
+
+(Of course, first measure to determine exactly where bottle-necks are before
+making major design changes.)
+
+In terms of redirect requests, because the HTTP replies are very simple, caching
+can actually be done at the HTTP layer. memcached or any fast HTTP caching
+solutions can be applied without requiring explicit support in the underlying
+application. This saves having to execute into the application at all.
+
+When short codes are assumed to not be recycled, data can be cached
+for extremely long periods; the cache can even be explicitly primed when a
+new short code is generated in the application. (Again, measure first, etc...)
+
+
+---------------
+HTTP 301 vs 302
+---------------
+
+Status code for redirects by URL shorteners is a tricky one. I'm personally in
+favour of 303, but I'm not sure I have strong arguments to make. The shortened
+URL being a sort of bookmark and hence distinct from the URI which it points at
+seems to means 301 is inappropriate. The semantic around 302 is ambiguous due to
+de facto behaviour of browsers, and 307 is clearly wrong. So, that leaves 303.
+
+Practically, using 301 will affect caching behaviour at various layers,
+including how search engines crawl and index the shortened URLs, specifically
+refreshing them less often or avoiding indexing them at all. This is possibly
+desirable behaviour.
+
+I'm not sure if and how various cache sytems are affected by the other redirect
+statuses.
