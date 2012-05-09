@@ -1,8 +1,15 @@
 Implemented using Python with Bottle, and sqlite for persistence.
 
+tinyurl.py contains the implementation.
+
 It's a very minimal implementation and many exceptional conditions are ignored,
 e.g. DB connection failure, malformed/invalid request, and running out of short
 codes to hand out.
+
+Configuration options are currently hardcoded, and it will start using Bottle's
+default HTTP server.
+
+I have a instance of the server running at http://kai.yangman.ca/tinyurl/
 
 
 tinyurl_test.py contains unit testing code.
@@ -11,10 +18,11 @@ tinyurl_test.py contains unit testing code.
 shorten.py is a trivial test tool for testing the shortener
 
   Usage: ./shorten.py <shortener_url> <long_url> [custom_short_code]
-  e.g.: ./shorten.py http://localhost:8080/ http://tinyco.com/
+  e.g.: ./shorten.py http://kai.yangman.ca/tinyurl/ http://tinyco.com/
 
 
 Tested on python 2.7.2.
+
 
 -----------------------
 PERSISTENCE AND CACHING
