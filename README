@@ -7,9 +7,9 @@ e.g. DB connection failure, malformed/invalid request, and running out of short
 codes to hand out.
 
 Configuration options are currently hardcoded, and it will start using Bottle's
-default HTTP server.
+default HTTP server. (Not ideal, but saving time here.)
 
-I have a instance of the server running at http://kai.yangman.ca/tinyurl/
+I have an instance of the server running at http://kai.yangman.ca/tinyurl/
 
 
 tinyurl_test.py contains unit testing code.
@@ -36,12 +36,12 @@ While URL shorteners are much heavier terms of read than write operations,
 replication of persisted data is tricky because uniqueness of new short codes
 cannot be guaranteed if there is no total consistency.
 
-Several options to metigate this, either used in isolation or in combinations:
+Several options to mitigate this, either used in isolation or in combinations:
 
-  - If load on creating new short codes is low enough, have a single point
+  - If load incurred by creating new short codes is low enough, have a single point
     of entry (with fallback) for generating and recording new codes. Replicate
     to read-only slaves for nodes that only service redirection requests.
-    Redis seems to be appropriate here, although I've not actually used it yet.
+    Redis appears to be appropriate here, although I've not personally used it.
 
   - Use an immediately-consistent replication system and take the performance
     hit on creating new codes. Goold-old relational database, or Membase?
@@ -58,11 +58,7 @@ making major design changes.)
 In terms of redirect requests, because the HTTP replies are very simple, caching
 can actually be done at the HTTP layer. memcached or any fast HTTP caching
 solutions can be applied without requiring explicit support in the underlying
-application. This saves having to execute into the application at all.
-
-When short codes are assumed to not be recycled, data can be cached
-for extremely long periods; the cache can even be explicitly primed when a
-new short code is generated in the application. (Again, measure first, etc...)
+application. This saves having to execute into the application.
 
 
 ---------------
@@ -80,5 +76,7 @@ including how search engines crawl and index the shortened URLs, specifically
 refreshing them less often or avoiding indexing them at all. This is possibly
 desirable behaviour.
 
-I'm not sure if and how various cache sytems are affected by the other redirect
+I'm not sure if and how various cache systems are affected by the other redirect
 statuses.
+
+My implementation uses 303, which is Bottle's default for redirect().
