@@ -4,7 +4,15 @@ It's a very minimal implementation and many exceptional conditions are ignored,
 e.g. DB connection failure, malformed/invalid request, and running out of short
 codes to hand out.
 
+
 tinyurl_test.py contains unit testing code.
+
+
+shorten.py is a trivial test tool for testing the shortener
+
+  Usage: ./shorten.py <shortener_url> <long_url> [custom_short_code]
+  e.g.: ./shorten.py http://localhost:8080/ http://tinyco.com/
+
 
 Tested on python 2.7.2.
 
