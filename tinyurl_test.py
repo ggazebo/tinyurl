@@ -91,6 +91,22 @@ def test_db():
         print "FAIL"
         return False
 
+    print "  New URL with unusual characters in short code :",
+    result = db.store_url("http://test.com/", "a^$:@;'%")
+    if result == "a^$:@;'%":
+        print "pass"
+    else:
+        print "FAIL"
+        return False
+
+    print "  Fetch valid URL using unusual characters in short code code :",
+    result = db.get_url("a^$:@;'%")
+    if result == "http://test.com/":
+        print "pass"
+    else:
+        print "FAIL"
+        return False
+
     os.remove(TEST_DB_PATH)
     return True
 
