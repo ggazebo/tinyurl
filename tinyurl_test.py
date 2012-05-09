@@ -11,6 +11,20 @@ from urllib2 import urlopen, Request
 
 TEST_DB_PATH="./_test.db"
 
+SHORTENER = "http://127.0.0.1:8080/"
+SHORTEN_URL = SHORTENER + "shorten_url"
+
+'''
+print "STORE 'yangman' => 'http://yangman.ca'"
+for l in  urlopen(Request(SHORTEN_URL, json.dumps({'long_url': "http://yangman.ca", 'custom_short_code': 'yangman'}),
+                     headers={"Content-Type": "application/json"})):
+    print l
+
+print "STORE 'http://tinyco.com' => random"
+for l in  urlopen(Request(SHORTEN_URL, json.dumps({'long_url': "http://tinyco.com"}),
+                     headers={"Content-Type": "application/json"})):
+    print l
+'''
 
 def test_code_generator():
     print "Checking conformity of randomly generated codes:"
