@@ -6,7 +6,6 @@ import random
 import sqlite3
 import string
 
-bottle.debug(True)
 
 # The list of valid characters in an URL code: [a-zA-Z0-9]
 URL_CODE_CHARS = string.ascii_letters + string.digits
@@ -85,4 +84,4 @@ def get_long_url(url_code):
 
 
 if __name__ == '__main__':
-    bottle.run(host='localhost', port=8080, reloader=True)
+    bottle.run(host='localhost', port=8080)
